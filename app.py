@@ -82,36 +82,53 @@
 #     app.run(port=5000, debug=True)
 
 
+# from flask import Flask, request, jsonify
+
+# app = Flask(__name__)
+
+# @app.route("/")
+# def home():
+#     return "WhatsApp Bot is running!", 200
+
+# @app.route("/webhook", methods=["POST"])
+# def webhook():
+#     data = request.json
+#     print("Incoming message:", data)
+
+#     # extract message (Meta format v3 from Gupshup)
+#     try:
+#         sender = data["messages"][0]["from"]
+#         message = data["messages"][0]["text"]["body"]
+#     except Exception as e:
+#         print("Error extracting message:", e)
+#         return jsonify({"status": "ignored"})
+
+#     # simple reply logic
+#     if "hi" in message.lower():
+#         reply = "Hello 👋! How can I help you today?"
+#     else:
+#         reply = f"You said: {message}"
+
+#     # IMPORTANT: returning JSON doesn’t send reply to WhatsApp directly
+#     # Instead, you must call Gupshup API to reply (we’ll add this later)
+#     return jsonify({"reply": reply})
+
+# if __name__ == "__main__":
+#     app.run(host="0.0.0.0", port=5000)
+
+
 from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-@app.route("/")
+# Health check
+@app.route("/", methods=["GET"])
 def home():
-    return "WhatsApp Bot is running!", 200
+    return "Hello, Render is working! 🚀", 200
 
+# WhatsApp webhook
 @app.route("/webhook", methods=["POST"])
 def webhook():
     data = request.json
-    print("Incoming message:", data)
-
-    # extract message (Meta format v3 from Gupshup)
-    try:
-        sender = data["messages"][0]["from"]
-        message = data["messages"][0]["text"]["body"]
-    except Exception as e:
-        print("Error extracting message:", e)
-        return jsonify({"status": "ignored"})
-
-    # simple reply logic
-    if "hi" in message.lower():
-        reply = "Hello 👋! How can I help you today?"
-    else:
-        reply = f"You said: {message}"
-
-    # IMPORTANT: returning JSON doesn’t send reply to WhatsApp directly
-    # Instead, you must call Gupshup API to reply (we’ll add this later)
-    return jsonify({"reply": reply})
-
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    print("Incoming WhatsApp message:", data)  # logs in Render dashboard
+    return jsonify({"status": "received"}), 200
