@@ -182,7 +182,7 @@ def webhook():
             "channel": "whatsapp",
             "source": "917834811114",   # e.g. "917834811114" (check Gupshup docs)
             "destination": sender,
-            "message": reply_text,
+            "message": f'{{"type":"text","text":"{reply_text}"}}',
             "src.name": APP_NAME
         }
         r = requests.post(GUPSHUP_API, headers=headers, data=payload)
