@@ -180,7 +180,7 @@ def webhook():
         }
         payload = {
             "channel": "whatsapp",
-            "source": "YOUR_SANDBOX_NUMBER",   # e.g. "917834811114" (check Gupshup docs)
+            "source": "917834811114",   # e.g. "917834811114" (check Gupshup docs)
             "destination": sender,
             "message": reply_text,
             "src.name": APP_NAME
