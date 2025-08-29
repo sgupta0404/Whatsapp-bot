@@ -143,7 +143,7 @@ from flask import Flask, request, jsonify
 app = Flask(__name__)
 
 GUPSHUP_API = "https://api.gupshup.io/sm/api/v1/msg"
-API_KEY = "ba069899-a499-4189-98c8-ce00e548a06d"   # replace with your actual sandbox API key
+API_KEY = "f01ce2ab-0362-4199-a120-475156c8a1d1"   # replace with your actual sandbox API key
 APP_NAME = "whatsappbotdemo" # replace with your Gupshup sandbox app name
 
 @app.route("/", methods=["GET"])
