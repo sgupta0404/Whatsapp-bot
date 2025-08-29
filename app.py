@@ -4,7 +4,7 @@
 # app = Flask(__name__)
 
 # # Replace with your Gupshup API Key (from Sandbox page)
-# GUPSHUP_API_KEY = "ba069899-a499-4189-98c8-ce00e548a06d"
+# GUPSHUP_API_KEY = "ogloyetrkp7vsaaamyzecvf69awoiynt"
 # GUPSHUP_PHONE = "917834811114"   # Your sandbox sender number
 
 # @app.route("/")
@@ -143,7 +143,7 @@ from flask import Flask, request, jsonify
 app = Flask(__name__)
 
 GUPSHUP_API = "https://api.gupshup.io/sm/api/v1/msg"
-API_KEY = "f01ce2ab-0362-4199-a120-475156c8a1d1"   # replace with your actual sandbox API key
+API_KEY = "ba069899-a499-4189-98c8-ce00e548a06d"   # replace with your actual sandbox API key
 APP_NAME = "whatsappbotdemo" # replace with your Gupshup sandbox app name
 
 @app.route("/", methods=["GET"])
@@ -186,6 +186,7 @@ def webhook():
             "src.name": APP_NAME
         }
         r = requests.post(GUPSHUP_API, headers=headers, data=payload)
+        print("📤 Status Code:", r.status_code, flush=True)
         print("📤 Reply sent:", r.text, flush=True)
 
     return jsonify({"status": "received"}), 200
