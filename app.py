@@ -121,14 +121,18 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-# Health check
 @app.route("/", methods=["GET"])
 def home():
     return "Hello, Render is working! 🚀", 200
 
-# WhatsApp webhook
 @app.route("/webhook", methods=["POST"])
 def webhook():
-    data = request.json
-    print("Incoming WhatsApp message:", data)  # logs in Render dashboard
+    try:
+        data = request.get_json(force=True)
+    except Exception:
+        data = {"error": "Could not parse JSON", "raw": request.data.decode("utf-8")}
+    
+    print("🔔 Incoming Webhook Data:", data, flush=True)  # always print
+    
     return jsonify({"status": "received"}), 200
+
