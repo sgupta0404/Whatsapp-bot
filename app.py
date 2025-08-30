@@ -107,28 +107,36 @@ def webhook():
 
     print(f"📩 Message from {sender}: {message_text}", flush=True)
 
-    # 🔹 Add to conversation history
-    if sender not in conversations:
-        conversations[sender] = []
-    conversations[sender].append({"role": "user", "text": message_text})
+     # 🔹 Check for reset command
+    if message_text.lower() == "/reset":
+        conversations[sender] = []  # clear chat history
+        reply_text = "🧹 Memory cleared! Let's start fresh."
+    else:
+        # 🔹 Add to conversation history
+        if sender not in conversations:
+            conversations[sender] = []
+        conversations[sender].append({"role": "user", "text": message_text})
 
-    # 🔹 Keep only last 5 messages for memory
-    if len(conversations[sender]) > 5:
-        conversations[sender] = conversations[sender][-5:]
+        # 🔹 Keep only last 5 messages for memory
+        if len(conversations[sender]) > 5:
+            conversations[sender] = conversations[sender][-5:]
 
-    # 🔹 Prepare context for Gemini
-    history = "\n".join([f"{msg['role']}: {msg['text']}" for msg in conversations[sender]])
+        # 🔹 Prepare context for Gemini
+        history = "\n".join([f"{msg['role']}: {msg['text']}" for msg in conversations[sender]])
 
-    try:
-        model = genai.GenerativeModel("gemini-2.5-flash-lite")
-        response = model.generate_content(f"Here is the chat history:\n{history}\n\nReply as a helpful assistant:")
-        reply_text = response.text
-    except Exception as e:
-        reply_text = "⚠️ Sorry, I'm having trouble replying right now."
-        print("❌ Gemini Error:", e, flush=True)
+        try:
+            model = genai.GenerativeModel("gemini-1.5-flash")
+            response = model.generate_content(
+                f"Here is the chat history:\n{history}\n\nReply as a helpful assistant:"
+            )
+            reply_text = response.text
+        except Exception as e:
+            reply_text = "⚠️ Sorry, I'm having trouble replying right now."
+            print("❌ Gemini Error:", e, flush=True)
 
-    # 🔹 Add bot reply to memory
-    conversations[sender].append({"role": "bot", "text": reply_text})
+        # 🔹 Add bot reply to memory
+        conversations[sender].append({"role": "bot", "text": reply_text})
+
 
     # 🔹 Send reply via Gupshup API
     headers = {
