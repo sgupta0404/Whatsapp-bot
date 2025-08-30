@@ -120,7 +120,7 @@ def webhook():
     history = "\n".join([f"{msg['role']}: {msg['text']}" for msg in conversations[sender]])
 
     try:
-        model = genai.GenerativeModel("gemini-1.5-flash")
+        model = genai.GenerativeModel("gemini-2.5-flash-lite")
         response = model.generate_content(f"Here is the chat history:\n{history}\n\nReply as a helpful assistant:")
         reply_text = response.text
     except Exception as e:
