@@ -23,7 +23,7 @@ genai.configure(api_key=GENAI_API_KEY)
 def get_ai_reply(user_message: str) -> str:
     """Get smart AI reply using Gemini Pro"""
     try:
-        model = genai.GenerativeModel("gemini-2.0-flash:generateContent")
+        model = genai.GenerativeModel("gemini-pro")
         response = model.generate_content(user_message)
         return response.text.strip()
     except Exception as e:
