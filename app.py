@@ -1,16 +1,38 @@
+# use these 2 lines when you want to load values from .env file locally
+
+# from dotenv import load_dotenv
+# load_dotenv()
+
+import os
+import google.generativeai as genai
 import requests
 from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-GUPSHUP_API = "https://api.gupshup.io/wa/api/v1/msg"   # note: /wa/api/v1/msg for WhatsApp
-API_KEY = "ogloyetrkp7vsaaamyzecvf69awoiynt"           # sandbox API key
-APP_NAME = "whatsappbotdemo"                           # your app name
-GUPSHUP_PHONE = "917834811114"                         # sandbox sender number
+# Gupshup configs
+GUPSHUP_API = "https://api.gupshup.io/wa/api/v1/msg"  # WhatsApp endpoint
+API_KEY = os.getenv("GUPSHUP_API_KEY")
+APP_NAME = os.getenv("GUPSHUP_APP_NAME")
+GUPSHUP_PHONE = os.getenv("GUPSHUP_PHONE")
+
+# Gemini configs
+GENAI_API_KEY = os.getenv("GENAI_API_KEY")
+genai.configure(api_key=GENAI_API_KEY)
+
+def get_ai_reply(user_message: str) -> str:
+    """Get smart AI reply using Gemini Pro"""
+    try:
+        model = genai.GenerativeModel("gemini-2.0-flash:generateContent")
+        response = model.generate_content(user_message)
+        return response.text.strip()
+    except Exception as e:
+        print("❌ Gemini error:", e, flush=True)
+        return "⚠️ Sorry, I couldn't process that right now."
 
 @app.route("/", methods=["GET"])
 def home():
-    return "Hello, Render is working! 🚀", 200
+    return "Hello, Render + Gemini is working! 🚀", 200
 
 @app.route("/webhook", methods=["POST"])
 def webhook():
@@ -26,17 +48,8 @@ def webhook():
 
     print(f"📩 Message from {sender}: {message_text}", flush=True)
 
-    # Rule-based replies
-    if "hello" in message_text.lower() or "hi" in message_text.lower():
-        reply_text = "👋 Hello! Welcome to our WhatsApp service."
-    elif "price" in message_text.lower():
-        reply_text = "💰 Our pricing starts at ₹499/month. Would you like details?"
-    elif "help" in message_text.lower():
-        reply_text = "📞 You can reach support at support@example.com"
-    elif "bye" in message_text.lower():
-        reply_text = "👋 Goodbye! Have a great day!"
-    else:
-        reply_text = "🤖 I didn't understand that. Type 'help' for options."
+    # 🔹 Gemini reply
+    reply_text = get_ai_reply(message_text)
 
     # Send reply via Gupshup API
     headers = {
@@ -56,4 +69,3 @@ def webhook():
     print("📤 Reply sent:", r.text, flush=True)
 
     return jsonify({"status": "received"}), 200
-
