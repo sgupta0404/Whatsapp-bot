@@ -80,7 +80,7 @@ app = Flask(__name__)
 # 🔹 Config
 GUPSHUP_API = "https://api.gupshup.io/wa/api/v1/msg"
 API_KEY = os.getenv("GUPSHUP_API_KEY")
-APP_NAME = os.getenv("APP_NAME")
+APP_NAME = os.getenv("GUPSHUP_APP_NAME")
 GUPSHUP_PHONE = os.getenv("GUPSHUP_PHONE")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
